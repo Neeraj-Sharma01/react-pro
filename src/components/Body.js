@@ -2,6 +2,9 @@ import RestaurentCard from "./RestaurentCard";
 import {useState,useEffect} from "react"
 import resList from "../utiles/monkData";
 import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+
+
 const Body = () => {
   //State Variable - Super Pwerful Variable
 const [List,setList] = useState([]);
@@ -9,13 +12,15 @@ const [FilterList,setFilterList] = useState([]);
 
 const [searchText,setSearchText] = useState("")
 
-//it is use when component is rendering is compliete then it is call or render this code
+//when do not use dependencies array [] it run every render
+//when we use default dependency array [] its call once when initial render page
+//when we give dependencie array inside pass value like [btnClick] it only run when it value change
 useEffect(() => {
   fetchData()
 },[])
 
 const fetchData = async() => {
-    const data = await fetch('https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.95250&lng=75.71050&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING')
+       const data = await fetch('https://www.swiggy.com/dapi/restaurants/list/v5?lat=24.585445&lng=73.712479&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING')
     const json = await data.json();
     console.log(json)
     console.log(json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants);
@@ -24,10 +29,7 @@ const fetchData = async() => {
     setFilterList(json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants);
 }
 
-// if(List.length === 0)
-// {
-//   return <Shimmer/>
-// } you can write this type of condition like next line
+
 
 
     return List.length === 0 ? <Shimmer/> : (
@@ -50,7 +52,9 @@ const fetchData = async() => {
             </div>
             <div className="res-container">
                 {FilterList.map((restaurent) => (
-                    <RestaurentCard key={restaurent.info.id} resName={restaurent}/>
+                  <Link key={restaurent.info.id} to={"/menu/"+restaurent.info.id}>
+                    <RestaurentCard resName={restaurent}/>
+                  </Link>
                 ))}
             </div>
         </div>
